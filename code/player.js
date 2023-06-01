@@ -19,6 +19,8 @@ class Player {
             friction: 0.0
         };
         
+        this.soundJump = new Audio("music/playerJump.mp3");
+        
         // movement attr - mecánica de salto
         this.maxVerticalVel = 10;
 
@@ -39,6 +41,7 @@ class Player {
 
         if(Input.IsKeyDown(KEY_SPACE))
         {
+            this.soundJump.play();
             this.ApplyVelocity(new b2Vec2(0, 5));
         }
 

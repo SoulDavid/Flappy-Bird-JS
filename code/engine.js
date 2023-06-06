@@ -1,4 +1,6 @@
+//Objeto que recoge el elemento canvas de HTML
 var canvas;
+//Recoge el contexto del canvas, usado para renderizar en este
 var ctx;
 
 var targetDT = 1/60;
@@ -9,6 +11,7 @@ var time = 0,
     contadorTime = 0,
     frames = 0;
 
+//La puntuación del jugador
 var score = 0;
 
 //variable que recoge la escena que debería estar reproduciendose
@@ -28,6 +31,7 @@ window.requestAnimationFrame = (function (event){
 
 window.onload = BodyLoaded;
 
+//Array que recoge los gráficos del juego entero
 var graphicAssets = {
     background : {
         path: "./assets/background.jpg",
@@ -60,6 +64,7 @@ var graphicAssets = {
     }
 };
 
+//Función para cargar todos los archivos de imagen
 function LoadImages(assets, onloaded)
 {
     let imagesToLoad = 0;
@@ -72,6 +77,7 @@ function LoadImages(assets, onloaded)
         {
             imagesToLoad++;
 
+            //Crea la imagen a partir de las propiedades de cada elemento del array
             const img = assets[asset].image = new Image;
             img.src = assets[asset].path;
             img.onload = onload;
@@ -80,28 +86,35 @@ function LoadImages(assets, onloaded)
     return assets;
 }
 
+//Cargar la escena en el canvas
 function BodyLoaded()
 {
+    //Asigna las variables de canvas y del contexto de este
     canvas = document.getElementById("MyCanvas");
     ctx = canvas.getContext("2d");
 
+    //Inicia los controles, a traves de las funciones de estos scripts
     SetupKeyboardEvents();
     SetupMouseEvents();
     
+    //Prepara las fisicas del mundo, pues usamos las fisicas de box2D
     PreparePhysics(ctx);
 
+    //Carga las imagenes
     LoadImages(graphicAssets, function() {
         Start();
         Loop();
     });
 }
 
+//Inicio del juego, iniciamos con la escena de menu
 function Start()
 {
     actualScene = menu;
     actualScene.Start();
 }
 
+//Bucle del engine
 function Loop()
 {
     //DeltaTime - Tiempo que ha transcurrido
@@ -137,16 +150,19 @@ function Loop()
     Input.PostUpdate();
 }
 
+//Update del juego
 function Update(deltaTime)
 {
     contadorTime += deltaTime;
 
+    //Limpia las fisicas para que no se buguee el juego
     world.Step(deltaTime, 8, 3);
     world.ClearForces();
 
     actualScene.Update(deltaTime);
 }
 
+//Escena de pintar la escena actual
 function Draw(ctx)
 {
     ctx.clearRect(0,0,canvas.width, canvas.height);
@@ -160,6 +176,7 @@ function Draw(ctx)
     ctx.fillText("TimePlay: " + contadorTime.toFixed(2), 10, 40);
 }
 
+//Escena de pintar el mundo de box2D (Colliders)
 function DrawWorld(ctx, world)
 {
     ctx.save();
